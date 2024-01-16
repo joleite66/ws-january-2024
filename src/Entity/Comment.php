@@ -15,6 +15,12 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
     #[ORM\Column(length: 255)]
     private ?string $author = null;
 
