@@ -4,13 +4,12 @@
 
 {% block body %}
     <h2>{{ conference }} Conference</h2>
+    <div>There are {{ comments|length }} comments.</div>
 
     {% if comments|length > 0 %}
-        <div>There are {{ comments|length }} comments.</div>
-
         {% for comment in comments %}
             {% if comment.photofilename %}
-                <img src="{{ asset('uploads/photos/' ~ comment.photofilename) }}" style="max-width: 200px"/>
+                <img src="{{ asset('uploads/photos/' ~ comment.photofilename) }}" style="max-width: 200px" />
             {% endif %}
 
             <h4>{{ comment.author }}</h4>
@@ -20,8 +19,6 @@
 
             <p>{{ comment.text }}</p>
         {% endfor %}
-
-
         {% if previous >= 0 %}
             <a href="{{ path('conference', { slug: conference.slug, offset: previous }) }}">Previous</a>
         {% endif %}

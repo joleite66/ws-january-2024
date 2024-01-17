@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Twig\Extension;
+namespace App\Twig\Runtime;
 
 use App\Repository\ConferenceRepository;
 use Twig\Extension\RuntimeExtensionInterface;
 
 class AppExtensionRuntime implements RuntimeExtensionInterface
 {
-    public function __construct(private readonly ConferenceRepository $conferenceRepository)
-    {
+    public function __construct(
+        private ConferenceRepository $conferenceRepository,
+    ) {
     }
 
-    public function getConferences(): array
+    public function getConferences()
     {
         return $this->conferenceRepository->findAll();
     }

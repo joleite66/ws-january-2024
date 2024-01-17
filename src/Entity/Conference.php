@@ -6,11 +6,9 @@ use App\Repository\ConferenceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity(repositoryClass: ConferenceRepository::class)]
-#[UniqueEntity('slug')]
 class Conference
 {
     #[ORM\Id]
@@ -21,11 +19,11 @@ class Conference
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    #[ORM\Column]
-    private ?bool $isInternational = null;
-
     #[ORM\Column(length: 4)]
     private ?string $year = null;
+
+    #[ORM\Column]
+    private ?bool $isInternational = null;
 
     #[ORM\OneToMany(mappedBy: 'conference', targetEntity: Comment::class, orphanRemoval: true)]
     private Collection $comments;
@@ -42,8 +40,6 @@ class Conference
     {
         return $this->city.' '.$this->year;
     }
-
-
 
     public function getId(): ?int
     {
@@ -62,18 +58,6 @@ class Conference
         return $this;
     }
 
-    public function isIsInternational(): ?bool
-    {
-        return $this->isInternational;
-    }
-
-    public function setIsInternational(bool $isInternational): static
-    {
-        $this->isInternational = $isInternational;
-
-        return $this;
-    }
-
     public function getYear(): ?string
     {
         return $this->year;
@@ -82,6 +66,18 @@ class Conference
     public function setYear(string $year): static
     {
         $this->year = $year;
+
+        return $this;
+    }
+
+    public function isInternational(): ?bool
+    {
+        return $this->isInternational;
+    }
+
+    public function setIsInternational(bool $isInternational): static
+    {
+        $this->isInternational = $isInternational;
 
         return $this;
     }
@@ -128,10 +124,10 @@ class Conference
         return $this;
     }
 
-    public function computeSlug(SluggerInterface $slugger): void
+    public function computeSlug(SluggerInterface $slugger)
     {
-        if(!$this->slug || '-' === $this->slug){
-            $this->slug =(string) $slugger->slug((string) $this)->lower();
+        if (!$this->slug || '-' === $this->slug) {
+            $this->slug = (string) $slugger->slug((string) $this)->lower();
         }
     }
 }
