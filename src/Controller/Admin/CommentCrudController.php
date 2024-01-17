@@ -27,28 +27,31 @@ class CommentCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Conference Comment')
             ->setEntityLabelInPlural('Conference Comments')
             ->setSearchFields(['author', 'text', 'email'])
-            ->setDefaultSort(['createdAt' => 'DESC']);
+            ->setDefaultSort(['createdAt' => 'DESC'])
+        ;
     }
 
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(EntityFilter::new('conference'));
+            ->add(EntityFilter::new('conference'))
+        ;
     }
 
     public function configureFields(string $pageName): iterable
-    {
+       {
         yield AssociationField::new('conference');
         yield TextField::new('author');
         yield EmailField::new('email');
         yield TextareaField::new('text')
-            ->hideOnIndex();
-        yield TextField::new('photoFilename')
-            ->onlyOnIndex();
+            ->hideOnIndex()
+        ;
         yield ImageField::new('photoFilename')
             ->setBasePath('/uploads/photos')
             ->setLabel('Photo')
-            ->onlyOnIndex();
+            ->onlyOnIndex()
+        ;
+        yield TextField::new('state');
 
         $createdAt = DateTimeField::new('createdAt')->setFormTypeOptions([
             'years' => range(date('Y'), date('Y') + 5),

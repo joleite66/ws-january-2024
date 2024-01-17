@@ -20,7 +20,8 @@ class CommentType extends AbstractType
         $builder
             ->add('author', null, [
                 'label' => 'Your name',
-            ])->add('text')
+            ])
+            ->add('text')
             ->add('email', EmailType::class)
             ->add('photo', FileType::class, [
                 'required' => false,
@@ -30,7 +31,7 @@ class CommentType extends AbstractType
                 ],
             ])
             ->add('submit', SubmitType::class)
-            ;
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

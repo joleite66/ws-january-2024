@@ -3,31 +3,25 @@
 namespace App;
 
 use App\Entity\Comment;
-use RuntimeException;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SpamChecker
 {
-    private string $endpoint;
-
     public function __construct(
-        private readonly HttpClientInterface     $client,
-
-        #[Autowire('%env(AKISMET_KEY)%')] string $akismetKey,
+        #[Target('akismet_client')]
+        private HttpClientInterface $client,
     ) {
-        $this->endpoint = sprintf('https://%s.rest.akismet.com/1.1/comment-check', $akismetKey);
     }
 
     /**
      * @return int Spam score: 0: not spam, 1: maybe spam, 2: blatant spam
      *
-     * @throws RuntimeException|TransportExceptionInterface if the call did not work
+     * @throws \RuntimeException if the call did not work
      */
     public function getSpamScore(Comment $comment, array $context): int
     {
-        $response = $this->client->request('POST', $this->endpoint, [
+        $response = $this->client->request('POST', '/1.1/comment-check', [
             'body' => array_merge($context, [
                 'blog' => 'https://guestbook.example.com',
                 'comment_type' => 'comment',
@@ -48,7 +42,7 @@ class SpamChecker
 
         $content = $response->getContent();
         if (isset($headers['x-akismet-debug-help'][0])) {
-            throw new RuntimeException(sprintf('Unable to check for spam: %s (%s).', $content, $headers['x-akismet-debug-help'][0]));
+            throw new \RuntimeException(sprintf('Unable to check for spam: %s (%s).', $content, $headers['x-akismet-debug-help'][0]));
         }
 
         return 'true' === $content ? 1 : 0;
